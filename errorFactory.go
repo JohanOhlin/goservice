@@ -1,7 +1,7 @@
-package errors
+package goservice
 
 import (
-"strings"
+	"strings"
 )
 
 var retryable bool = true
@@ -82,9 +82,9 @@ func PreconditionFailed(code, message string, params map[string]string) *IrisErr
 func errorFactory(typecode string, code string, message string, params map[string]string) *IrisError {
 	err := &IrisError{
 		TypeCode: typecode,
-		Code:    ERROR_UNKNOWN,
-		Message: message,
-		Params:  map[string]string{},
+		Code:     ERROR_UNKNOWN,
+		Message:  message,
+		Params:   map[string]string{},
 	}
 	if len(code) > 0 {
 		err.Code = code

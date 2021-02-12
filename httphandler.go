@@ -1,10 +1,8 @@
-package router
+package goservice
 
 import (
 	"encoding/json"
 	"github.com/google/uuid"
-	"goservice/errors"
-	"goservice/logging"
 	"net/http"
 	"strconv"
 	"time"
@@ -12,16 +10,16 @@ import (
 
 var (
 	mapErrorStatusToHttp = map[string]int{
-		errors.ERROR_BAD_REQUEST:  http.StatusBadRequest,    // 400
-		errors.ERROR_BAD_RESPONSE: http.StatusNotAcceptable, // 406
+		ERROR_BAD_REQUEST:  http.StatusBadRequest,    // 400
+		ERROR_BAD_RESPONSE: http.StatusNotAcceptable, // 406
 		// ERROR_OUT_OF_DATE:            http.StatusPreconditionFailed,  // 412
 		// ERROR_UNSUPPORTED_MEDIA_TYPE: http.StatusBadRequest,          // 400
-		errors.ERROR_FORBIDDEN:           http.StatusForbidden,           // 403
-		errors.ERROR_INTERNAL_SERVICE:    http.StatusInternalServerError, // 500
-		errors.ERROR_NOT_FOUND:           http.StatusNotFound,            // 404
-		errors.ERROR_PRECONDITION_FAILED: http.StatusPreconditionFailed,  // 412
-		errors.ERROR_TIMEOUT:             http.StatusGatewayTimeout,      // 504
-		errors.ERROR_UNAUTHORIZED:        http.StatusUnauthorized,        // 401
+		ERROR_FORBIDDEN:           http.StatusForbidden,           // 403
+		ERROR_INTERNAL_SERVICE:    http.StatusInternalServerError, // 500
+		ERROR_NOT_FOUND:           http.StatusNotFound,            // 404
+		ERROR_PRECONDITION_FAILED: http.StatusPreconditionFailed,  // 412
+		ERROR_TIMEOUT:             http.StatusGatewayTimeout,      // 504
+		ERROR_UNAUTHORIZED:        http.StatusUnauthorized,        // 401
 	}
 )
 
@@ -33,11 +31,11 @@ func ErrorCodeToStatusCode(errorCode string) int {
 	return http.StatusInternalServerError
 }
 
-type HttpRequestHandlerFunc func(w http.ResponseWriter, r *http.Request, context logging.IrisLogContext) *errors.IrisError
+type HttpRequestHandlerFunc func(w http.ResponseWriter, r *http.Request, context IrisLogContext) *IrisError
 
-func HttpRequestHandler(h HttpRequestHandlerFunc, logger logging.IrisLogger) http.HandlerFunc {
+func HttpRequestHandler(h HttpRequestHandlerFunc, logger IrisLogger) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		context := logging.IrisLogContext{
+		context := IrisLogContext{
 			CorrelationId: uuid.New().String(),
 			UserId:        "abc123",
 		}

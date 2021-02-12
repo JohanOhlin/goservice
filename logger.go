@@ -1,4 +1,4 @@
-package logging
+package goservice
 
 import (
 	"github.com/microsoft/ApplicationInsights-Go/appinsights"

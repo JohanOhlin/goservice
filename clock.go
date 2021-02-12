@@ -1,4 +1,4 @@
-package logging
+package goservice
 
 // We need to mock out the clock for tests; we'll use this to do it.
 

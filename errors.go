@@ -1,4 +1,4 @@
-package errors
+package goservice
 
 import (
 	"fmt"
@@ -26,10 +26,10 @@ var retryableCodes = []string{
 }
 
 type IrisError struct {
-	TypeCode	string			  `json:"typecode"`
-	Code        string            `json:"code"`
-	Message     string            `json:"message"`
-	Params      map[string]string `json:"params"`
+	TypeCode string            `json:"typecode"`
+	Code     string            `json:"code"`
+	Message  string            `json:"message"`
+	Params   map[string]string `json:"params"`
 	//StackFrames Stack             `json:"stack"`
 
 	// exported for serialization, but you should use Retryable to read the value.
@@ -174,9 +174,9 @@ func addParams(err *IrisError, params map[string]string) *IrisError {
 	}
 
 	return &IrisError{
-		Code:        err.Code,
-		Message:     err.Message,
-		Params:      copiedParams,
+		Code:    err.Code,
+		Message: err.Message,
+		Params:  copiedParams,
 		//StackFrames: err.StackFrames,
 		IsRetryable: err.IsRetryable,
 	}
@@ -235,9 +235,9 @@ func Augment(err error, context string, params map[string]string) error {
 		withMergedParams := addParams(err, params)
 		// The underlying terror will already have a stack, so we don't take a new trace here.
 		return &IrisError{
-			Code:        err.Code,
-			Message:     context,
-			Params:      withMergedParams.Params,
+			Code:    err.Code,
+			Message: context,
+			Params:  withMergedParams.Params,
 			//StackFrames: Stack{},
 			IsRetryable: err.IsRetryable,
 			cause:       err,
