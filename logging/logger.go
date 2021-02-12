@@ -1,9 +1,9 @@
 package logging
 
 import (
-"github.com/microsoft/ApplicationInsights-Go/appinsights"
-"github.com/microsoft/ApplicationInsights-Go/appinsights/contracts"
-"time"
+	"github.com/microsoft/ApplicationInsights-Go/appinsights"
+	"github.com/microsoft/ApplicationInsights-Go/appinsights/contracts"
+	"time"
 )
 
 type IrisLogger interface {
@@ -41,7 +41,7 @@ type IrisLogger interface {
 
 type IrisLogContext struct {
 	CorrelationId string
-	UserId string
+	UserId        string
 }
 
 type irisLogClient struct {
@@ -49,7 +49,15 @@ type irisLogClient struct {
 }
 
 func (log irisLogClient) Metric(name string, value float64, context IrisLogContext) {
-	log.client.TrackMetric(name, value)
+	telemetry := appinsights.NewMetricTelemetry(name, value)
+	if context.UserId != "" {
+		telemetry.Tags.User().SetAccountId(context.UserId)
+		telemetry.Tags[contracts.UserAccountId] = context.UserId
+	}
+	if context.CorrelationId != "" {
+		telemetry.Tags.Session().SetId(context.CorrelationId)
+	}
+	log.client.Track(telemetry)
 }
 
 func (log irisLogClient) Info(code string, message string, data map[string]string, context IrisLogContext) {
